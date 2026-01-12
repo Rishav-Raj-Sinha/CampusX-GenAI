@@ -1,6 +1,6 @@
 import streamlit as st
 from dotenv import load_dotenv
-from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate, load_prompt
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 load_dotenv()
@@ -16,31 +16,7 @@ length_input = st.selectbox(
     "Select the explanation length", ["Short", "Medium", "Long"]
 )
 
-# template
-template = PromptTemplate(
-    template="""
-    Please summarize the research paper titled "{paper_input}" with the following specifications:
-    Explanation Style: {style_input}
-    Explanation Length: {length_input}
-    1. Mathematical Details:
-       - Include relevant mathematical equations if present in the paper.
-       - Explain the mathematical concepts using simple, intuitive code snippets where applicable.
-    2. Analogies:
-       - Use relatable analogies to simplify complex ideas.
-    If certain information is not available in the paper, respond with: "Insufficient information available" instead of guessing.
-    Ensure the summary is clear, accurate, and aligned with the provided style and length.
-    """,
-    input_variables=["paper_input", "style_input", "length_input"],
-    validate_template=True,
-)
-
-prompt = template.invoke(
-    {
-        "paper_input": paper_input,
-        "style_input": style_input,
-        "length_input": length_input,
-    }
-)
+template = load_prompt("template.json")
 
 model = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
@@ -52,5 +28,15 @@ model = ChatGoogleGenerativeAI(
 
 if st.button("search"):
     st.write("Searching...")
-    result = model.invoke(prompt)
+    # creating a basic chain
+    # the input if given for first component of the chain
+    # then the ouput of the said component is given to the second component as input automatically by langchain
+    chain = template | model
+    result = chain.invoke(
+        {
+            "paper_input": paper_input,
+            "style_input": style_input,
+            "length_input": length_input,
+        }
+    )
     st.write(result.content)
