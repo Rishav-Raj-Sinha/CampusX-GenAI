@@ -2,4 +2,7 @@ import streamlit as st
 
 st.header("research tool")
 
-st.text_input("Enter your query here")
+userinput = st.text_input("Enter your query here")
+
+if st.button("search"):
+    st.write("Searching...")
