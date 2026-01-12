@@ -44,11 +44,10 @@ prompt = template.invoke(
 
 model = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
-    temperature=1.0,  # Gemini 3.0+ defaults to 1.0
+    temperature=1.0,
     max_tokens=None,
     timeout=None,
     max_retries=2,
-    # other params...
 )
 
 if st.button("search"):
