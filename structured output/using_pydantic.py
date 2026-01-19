@@ -50,3 +50,6 @@ But when Lynch has Patricia Arquette apparently playing two women (and Bill Pull
 
 # it will return a pydantic dictionery
 print(result)
+# so we use "." operator :
+# print(result.summary)
+# print(result.key_themes)
